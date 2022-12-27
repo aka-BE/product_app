@@ -1,0 +1,112 @@
+<html lang="en">
+
+<head>
+    <title>Login</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<body>
+    <style>
+        body {
+            background: #36454F;
+            position: relative;
+            height: 100vh;
+        }
+
+        .form--user__icon span{
+            font-size: 32px;
+            position: absolute !important;
+            top: 50% !important;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .container {
+                width: 40%;
+    margin: 0 auto;
+    background: #0C090A;
+    border-radius: 4px;
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    color: #fff;
+    content: '';
+    padding: 20px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+        }
+
+
+        .form--user__icon {
+                  border-radius: 50%;
+    height: 100px;
+    z-index: 9;
+    top: -50px;
+    text-align: center;
+    left: 50%;
+    transform: translate(-50%, 0);
+    position: absolute;
+    background: #0000A5;
+    width: 100px;
+    color: #fff;
+        }
+
+        button {
+
+     width: 100%;
+     color:#fff !important;
+    border-radius: 50px !important;
+    border: 0 !important;
+    background: #0000A5 !important;
+        }
+
+        .container h4 {
+            margin-top: 32px;
+        }
+        form a{
+        color:#fff !important;
+        text-decoration:underline !important;
+        }
+    </style>
+
+    <div class="container">
+        <div class="form--user__icon">
+            <div class="icon--img">
+                <span class="glyphicon glyphicon-user"></span>
+            </div>
+        </div>
+        <h4 class="text-center">Login</h4>
+        {% if error %}
+            <p class=error><strong>Error:</strong> {{ error }}
+        {% endif %}
+        <form action="/login" method="post">
+            <div class="form-group">
+                <label for="user"> <span class="glyphicon glyphicon-user"></span> User:</label>
+                <input type="user" class="form-control" id="user" placeholder="Enter user" name="user">
+            </div>
+            <div class="form-group">
+                <label for="pwd"> <span class="glyphicon glyphicon-lock"></span> Password:</label>
+                <input type="password" class="form-control" id="password" placeholder="Enter password" name="password">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+    </div>
+
+
+
+</body>
+
+</html>
