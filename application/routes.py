@@ -1,13 +1,20 @@
 """Route declaration."""
-from flask import current_app as app
-from flask import render_template, redirect, url_for, request, jsonify, session, flash
+from flask import Blueprint, render_template, redirect, url_for, request, jsonify, session, flash
+from flask_login import login_required, logout_user, current_user
 from collections import defaultdict
 from functools import wraps
 from .models import db, Product, Location, ProductMovement, User
 
 
+# Blueprint Configuration
+home_bp = Blueprint(
+    'home_bp', __name__,
+    template_folder='templates',
+    static_folder='static'
+)
 
-@app.route('/', methods=["POST", "GET"])
+@home_bp.route('/', methods=["POST", "GET"])
+@login_required
 def index():
 
 
@@ -40,7 +47,8 @@ def index():
         return render_template("index.html", products = products, locations = locations)
 
 
-@app.route('/products/', methods=["POST", "GET"])
+@home_bp.route('/products/', methods=["POST", "GET"])
+@login_required
 def viewProduct():
     if (request.method == "POST") and ('product_name' in request.form):
         product_name = request.form["product_name"]
@@ -59,7 +67,8 @@ def viewProduct():
         return render_template("products.html", products=products)
 
 
-@app.route("/dub-products/", methods=["POST", "GET"])
+@home_bp.route("/dub-products/", methods=["POST", "GET"])
+@login_required
 def getPDublicate():
     product_name = request.form["product_name"]
     products = Product.query.\
@@ -89,7 +98,8 @@ def updateProductInMovements(oldProduct, newProduct):
     db.session.commit()
 
 
-@app.route("/update-product/<name>", methods=["POST", "GET"])
+@home_bp.route("/update-product/<name>", methods=["POST", "GET"])
+@login_required
 def updateProduct(name):
     product = Product.query.get_or_404(name)
     old_porduct = product.product_id
@@ -108,7 +118,8 @@ def updateProduct(name):
         return render_template("update-product.html", product=product)
 
 
-@app.route("/delete-product/<name>")
+@home_bp.route("/delete-product/<name>")
+@login_required
 def deleteProduct(name):
     product_to_delete = Product.query.get_or_404(name)
 
@@ -120,7 +131,8 @@ def deleteProduct(name):
         return "There was an issue while deleteing the Product"
 
 
-@app.route('/locations/', methods=["POST", "GET"])
+@home_bp.route('/locations/', methods=["POST", "GET"])
+@login_required
 def viewLocation():
 
     if (request.method == "POST") and ('location_name' in request.form):
@@ -140,7 +152,8 @@ def viewLocation():
         return render_template("locations.html", locations=locations)
 
 
-@app.route("/dub-locations/", methods=["POST", "GET"])
+@home_bp.route("/dub-locations/", methods=["POST", "GET"])
+@login_required
 def getDublicate():
     location = request.form["location"]
     locations = Location.query.\
@@ -153,7 +166,8 @@ def getDublicate():
         return {"output": True}
 
 
-@app.route("/update-location/<name>", methods=["POST", "GET"])
+@home_bp.route("/update-location/<name>", methods=["POST", "GET"])
+@login_required
 def updateLocation(name):
     location = Location.query.get_or_404(name)
     old_location = location.location_id
@@ -173,7 +187,8 @@ def updateLocation(name):
         return render_template("update-location.html", location=location)
 
 
-@app.route("/delete-location/<name>")
+@home_bp.route("/delete-location/<name>")
+@login_required
 def deleteLocation(name):
     location_to_delete = Location.query.get_or_404(name)
 
@@ -185,7 +200,8 @@ def deleteLocation(name):
         return "There was an issue while deleteing the Location"
 
 
-@app.route("/movements/", methods=["POST", "GET"])
+@home_bp.route("/movements/", methods=["POST", "GET"])
+@login_required
 def viewMovements():
     if request.method == "POST" :
         product_id      = request.form["productId"]
@@ -221,7 +237,8 @@ def viewMovements():
         return render_template("movements.html", movements=movs, products=products, locations=locations)
 
 
-@app.route("/update-movement/<int:id>", methods=["POST", "GET"])
+@home_bp.route("/update-movement/<int:id>", methods=["POST", "GET"])
+@login_required
 def updateMovement(id):
 
     movement    = ProductMovement.query.get_or_404(id)
@@ -244,7 +261,8 @@ def updateMovement(id):
         return render_template("update-movement.html", movement=movement, locations=locations, products=products)
 
 
-@app.route("/delete-movement/<int:id>")
+@home_bp.route("/delete-movement/<int:id>")
+@login_required
 def deleteMovement(id):
     movement_to_delete = ProductMovement.query.get_or_404(id)
 
@@ -256,7 +274,8 @@ def deleteMovement(id):
         return "There was an issue while deleteing the Prodcut Movement"
 
 
-@app.route("/product-balance/", methods=["POST", "GET"])
+@home_bp.route("/product-balance/", methods=["POST", "GET"])
+@login_required
 def productBalanceReport():
     movs = ProductMovement.query.\
         join(Product, ProductMovement.product_id == Product.product_id).\
@@ -294,7 +313,8 @@ def productBalanceReport():
     return render_template("product-balance.html", movements=balancedDict)
 
 
-@app.route("/movements/get-from-locations/", methods=["POST"])
+@home_bp.route("/movements/get-from-locations/", methods=["POST"])
+@login_required
 def getLocations():
     product = request.form["productId"]
     location = request.form["location"]

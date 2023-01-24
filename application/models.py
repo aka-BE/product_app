@@ -1,6 +1,7 @@
 """Data models."""
-from . import db
+from flask_login import UserMixin
 from datetime import datetime
+from . import db
 
 
 class Product(db.Model):
@@ -40,13 +41,15 @@ class ProductMovement(db.Model):
         return '<ProductMovement %r>' % self.movement_id
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
+    """User account model"""
 
-    __tablename__   = 'users'
+    __tablename__   = 'usr'
     id              = db.Column(db.Integer, primary_key=True)
-    user            = db.Column(db.String(100), nullable=False, unique=True)
-    password        = db.Column(db.String(200), nullable=False, unique=True)
+    username        = db.Column(db.String(100), nullable=False, unique=True)
+    password        = db.Column(db.String(200), nullable=False, unique=False)
 
 
     def __repr__(self):
-        return '<User %r>' % self.id
+        return '<User {}>'.format(self.username)
+

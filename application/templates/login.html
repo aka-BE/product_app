@@ -1,112 +1,70 @@
 <html lang="en">
 
 <head>
-    <title>Login</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <title>{{ title }}</title>
+  <meta name="description" content="Add user authentication."/>
+  <meta name="HandheldFriendly" content="True"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="theme-color" content="#5eb9d7"/>
+  <link rel="shortcut icon" href="{{ url_for('static', filename='img/logo.jpeg') }}" type="image/x-icon"/>
+  <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,500" rel="stylesheet"/>
 </head>
 
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
+{% block title %}
+<link href="{{ url_for('static', filename='css/account.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
 
-<body>
-    <style>
-        body {
-            background: #36454F;
-            position: relative;
-            height: 100vh;
-        }
+<body class="{{ template }}">
+<div class='conteiner'>
+    {% block content %}
+    <div class="form-wrapper">
 
-        .form--user__icon span{
-            font-size: 32px;
-            position: absolute !important;
-            top: 50% !important;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        .container {
-                width: 40%;
-    margin: 0 auto;
-    background: #0C090A;
-    border-radius: 4px;
-    position: absolute;
-    top: 50%;
-    z-index: 2;
-    color: #fff;
-    content: '';
-    padding: 20px;
-    left: 50%;
-    transform: translate(-50%, -50%);
-        }
-
-
-        .form--user__icon {
-                  border-radius: 50%;
-    height: 100px;
-    z-index: 9;
-    top: -50px;
-    text-align: center;
-    left: 50%;
-    transform: translate(-50%, 0);
-    position: absolute;
-    background: #0000A5;
-    width: 100px;
-    color: #fff;
-        }
-
-        button {
-
-     width: 100%;
-     color:#fff !important;
-    border-radius: 50px !important;
-    border: 0 !important;
-    background: #0000A5 !important;
-        }
-
-        .container h4 {
-            margin-top: 32px;
-        }
-        form a{
-        color:#fff !important;
-        text-decoration:underline !important;
-        }
-    </style>
-
-    <div class="container">
-        <div class="form--user__icon">
-            <div class="icon--img">
-                <span class="glyphicon glyphicon-user"></span>
-            </div>
+        <div class="logo">
+        <img src="{{ url_for('static', filename='img/logo.jpeg') }}" alt="logo"/>
         </div>
-        <h4 class="text-center">Login</h4>
-        {% if error %}
-            <p class=error><strong>Error:</strong> {{ error }}
-        {% endif %}
-        <form action="/login" method="post">
-            <div class="form-group">
-                <label for="user"> <span class="glyphicon glyphicon-user"></span> User:</label>
-                <input type="user" class="form-control" id="user" placeholder="Enter user" name="user">
-            </div>
-            <div class="form-group">
-                <label for="pwd"> <span class="glyphicon glyphicon-lock"></span> Password:</label>
-                <input type="password" class="form-control" id="password" placeholder="Enter password" name="password">
-            </div>
-            <button type="submit" class="btn btn-default">Submit</button>
+
+        {% for message in get_flashed_messages(category_filter=["error"]) %}
+        <div class="alert alert-warning">
+            {{ message }}
+        </div>
+        {% endfor %}
+
+        <h1>Log In</h1>
+
+        <form method="POST" action="{{ url_for('auth_bp.login') }}">
+        {{ form.csrf_token }}
+
+        <fieldset class="username">
+            {{ form.username.label }}
+            {{ form.username }}
+            {% if form.username.errors %}
+            <ul class="errors">
+                {% for error in form.username.errors %}
+                <li>{{ error }}</li>{% endfor %}
+            </ul>
+            {% endif %}
+        </fieldset>
+
+        <fieldset class="password">
+            {{ form.password.label }}
+            {{ form.password }}
+            {% if form.password.errors %}
+            <ul class="errors">
+                {% for error in form.password.errors %}
+                <li>{{ error }}</li>{% endfor %}
+            </ul>
+            {% endif %}
+        </fieldset>
+
+        <div class="submit-button">
+            {{ form.submit }}
+        </div>
+
         </form>
     </div>
-
-
-
+    {% endblock %}
+</div>
 </body>
 
 </html>
